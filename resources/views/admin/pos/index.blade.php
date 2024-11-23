@@ -97,11 +97,19 @@
                                                             @endif
 
                                                             <!-- Nom du produit -->
-                                                            <h5 class="card-title mt-2">{{ $produit->nom }}</h5>
+                                                            <h5 class="card-title mt-1">{{ $produit->nom }}</h5>
 
                                                             <!-- Prix -->
                                                             <p class="card-text text-center">
                                                                 {{ number_format($produit->prix, 0, ',', ' ') }} CFA
+                                                                @php
+                                                                    // Calculer la quantité disponible dans les stocks associés
+                                                                    $quantiteTotale = $produit->stocks->sum('quantite_actuelle');
+                                                                @endphp
+                                                                <span style="background-color: {{ $quantiteTotale <= 5 ? '#f30d0d' : '#28a745' }}; color: white; padding: 1px 5px; border-radius: 5px;">
+                                                                    {{ $quantiteTotale }}
+                                                                </span>
+
                                                             </p>
                                                         </div>
                                                     </div>

@@ -21,8 +21,13 @@ class VenteController extends Controller
         $quincaillerieId = auth()->user()->quincaillerie_id;
 
         // Récupérer tous les produits de cette quincaillerie
-        $produits = Produit::where('quincaillerie_id', $quincaillerieId)->get();
-
+        //$produits = Produit::where('quincaillerie_id', $quincaillerieId)->get();
+        // Récupérer tous les produits de cette quincaillerie avec un stock >= 1
+        $produits = Produit::where('quincaillerie_id', $quincaillerieId)
+        ->whereHas('stocks', function ($query) {
+            $query->where('quantite_actuelle', '>=', 1); // Vérifier que le stock est >= 1
+        })
+        ->get();
         // Récupérer tous les modes de paiement
         $modesPaiement = ModePaiement::where('quincaillerie_id', $quincaillerieId)->get();
 
@@ -148,5 +153,5 @@ class VenteController extends Controller
     {
         //
     }
-    
+
 }
