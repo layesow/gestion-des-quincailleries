@@ -38,6 +38,110 @@ class VenteController extends Controller
     }
 
 
+    /**
+     * Store a newly created resource in storage.
+     */
+    /* public function store(Request $request)
+    {
+        // Calculer le total de la vente
+        $total = 0;
+        $produits = Produit::findMany(array_column($request->produits, 'id')); // Récupérer tous les produits en une seule requête
+
+        foreach ($request->produits as $produitData) {
+            // Récupérer le produit
+            $produit = $produits->firstWhere('id', $produitData['id']);
+
+            // Calculer le total pour chaque produit
+            $total += $produit->prix * $produitData['quantite'];
+        }
+
+        // Assurez-vous que 'modes_paiement_id' est bien fourni dans la requête
+        if (!$request->has('modes_paiement_id')) {
+            return redirect()->back()->with('error', 'Le mode de paiement est requis.');
+        }
+
+        // Créer la vente en incluant le 'mode_paiement_id' et le 'total'
+        $vente = Vente::create([
+            'client_nom' => $request->client_nom,
+            'client_telephone' => $request->client_telephone,
+            'quincaillerie_id' => auth()->user()->quincaillerie_id,
+            'user_id' => auth()->id(),
+            'caisse_id' => $request->caisse_id,
+            'modes_paiement_id' => $request->modes_paiement_id, // Ajoutez le mode de paiement ici
+            'date_vente' => now(),
+            'total' => $total, // Ajoutez le total calculé
+        ]);
+
+        // Ajouter les produits à la vente
+        foreach ($request->produits as $produitData) {
+            $produit = $produits->firstWhere('id', $produitData['id']);
+
+            // Calculer le total du produit
+            $totalProduit = $produit->prix * $produitData['quantite'];
+
+            // Ajouter le produit à la vente dans la table pivot
+            $vente->produits()->attach($produitData['id'], [
+                'quantite' => $produitData['quantite'],
+                'prix_unitaire' => $produit->prix,
+                'total' => $totalProduit, // Ajout du total calculé pour le produit
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Vente enregistrée avec succès !');
+    } */
+    /* public function store(Request $request)
+    {
+        // Calculer le total de la vente
+        $total = 0;
+        $produits = Produit::findMany(array_column($request->produits, 'id')); // Récupérer tous les produits en une seule requête
+
+        foreach ($request->produits as $produitData) {
+            // Récupérer le produit
+            $produit = $produits->firstWhere('id', $produitData['id']);
+
+            // Calculer le total pour chaque produit
+            $total += $produit->prix * $produitData['quantite'];
+        }
+
+        // Assurez-vous que 'modes_paiement_id' est bien fourni dans la requête
+        if (!$request->has('modes_paiement_id')) {
+            return redirect()->back()->with('error', 'Le mode de paiement est requis.');
+        }
+
+        // Créer la vente en incluant le 'mode_paiement_id' et le 'total'
+        $vente = Vente::create([
+            'client_nom' => $request->client_nom,
+            'client_telephone' => $request->client_telephone,
+            'quincaillerie_id' => auth()->user()->quincaillerie_id,
+            'user_id' => auth()->id(),
+            'caisse_id' => $request->caisse_id,
+            'modes_paiement_id' => $request->modes_paiement_id, // Ajoutez le mode de paiement ici
+            'date_vente' => now(),
+            'total' => $total, // Ajoutez le total calculé
+        ]);
+
+        // Ajouter les produits à la vente
+        foreach ($request->produits as $produitData) {
+            $produit = $produits->firstWhere('id', $produitData['id']);
+
+            // Calculer le total du produit
+            $totalProduit = $produit->prix * $produitData['quantite'];
+
+            // Ajouter le produit à la vente dans la table pivot
+            $vente->produits()->attach($produitData['id'], [
+                'quantite' => $produitData['quantite'],
+                'prix_unitaire' => $produit->prix,
+                'total' => $totalProduit, // Ajout du total calculé pour le produit
+            ]);
+        }
+
+        // Mettre à jour le solde de la caisse
+        $caisse = Caisse::findOrFail($vente->caisse_id);
+        $caisse->solde_actuel += $total; // Ajouter le total de la vente au solde actuel
+        $caisse->save();
+
+        return redirect()->back()->with('success', 'Vente effectuée avec succès !');
+    } */
     public function store(Request $request)
     {
         // Calculer le total de la vente
@@ -91,7 +195,7 @@ class VenteController extends Controller
             if ($stock) {
                 // Vérifier que la quantité demandée est disponible
                 if ($stock->quantite_actuelle < $produitData['quantite']) {
-                    return redirect()->back()->with('error', "Stock insuffisant pour le produit : {$produit->nom}. Il n'y a que {$stock->quantite_actuelle} article(s) disponible(s).");
+                    return redirect()->back()->with('error', "Stock insuffisant pour le produit : {$produit->nom}.");
                 }
 
                 // Décrémenter le stock
@@ -148,5 +252,4 @@ class VenteController extends Controller
     {
         //
     }
-    
 }
