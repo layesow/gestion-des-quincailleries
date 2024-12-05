@@ -95,7 +95,7 @@ class AbonnementController extends Controller
             'abonnement_id' => $abonnement->id,
             'date_paiement' => now(),
             'montant' => $plan->prix,
-            'mode_paiement_id' => 1, // ID du mode de paiement, à ajuster si nécessaire
+            'mode_paiement_id' => null, // ID du mode de paiement, à ajuster si nécessaire
             'statut' => 'en attente',
         ]);
 

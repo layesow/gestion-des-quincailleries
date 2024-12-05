@@ -72,12 +72,13 @@
                                                 <!-- Vérifier si l'abonnement est en attente -->
                                                 @if($abonnement->statut == 'en attente')
                                                     <!-- Bouton pour activer l'abonnement -->
-                                                    <form action="{{ route('abonnements.mise_a_jour', $abonnement->id) }}" method="POST" style="display: inline;">
+                                                    {{-- <form action="{{ route('abonnements.mise_a_jour', $abonnement->id) }}" method="POST" style="display: inline;">
                                                         @csrf
                                                         <button type="submit" class="btn btn-success">
                                                             Activer
                                                         </button>
-                                                    </form>
+                                                    </form> --}}
+                                                    <span class="badge badge-success">Activer</span>
                                                 @else
                                                     <span class="badge badge-info">Déjà activé</span>
                                                 @endif

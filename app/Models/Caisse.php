@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\User;
 use App\Models\Vente;
 use App\Models\Depense;
 use App\Models\Quincaillerie;
@@ -32,5 +33,10 @@ class Caisse extends Model
     public function depenses()
     {
         return $this->hasMany(Depense::class);
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class, 'caisse_id');
     }
 }

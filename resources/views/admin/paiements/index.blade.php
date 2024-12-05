@@ -45,16 +45,30 @@
                                     @foreach ($paiements as $paiement)
                                         <tr>
                                             <td>{{ $paiement->id }}</td>
-                                            <td>{{ $paiement->abonnement->planAbonnement->nom }}</td>
+                                            <td>{{ $paiement->abonnement->planAbonnement->nom }}
+                                                (@if($paiement->abonnement && $paiement->abonnement->quincaillerie)
+                                                {{ $paiement->abonnement->quincaillerie->name }}
+                                            @else
+                                                Non défini
+                                            @endif)
+                                            </td>
                                             <td>{{ number_format($paiement->montant, 0, ',', ' ') }} FCFA</td>
                                             <td>{{ \Carbon\Carbon::parse($paiement->date_paiement)->format('d/m/Y') }}</td>
-                                            <td>
+                                            {{-- <td>
                                                 <a href="#" data-toggle="modal" data-target="#modalModifierMode{{ $paiement->id }}"
                                                     data-paiement-id="{{ $paiement->id }}"
                                                     data-mode-paiement-id="{{ $paiement->mode_paiement_id }}">
                                                     {{ $paiement->modePaiement->nom }}
                                                 </a>
+                                            </td> --}}
+                                            <td>
+                                                <a href="#" data-toggle="modal" data-target="#modalModifierMode{{ $paiement->id }}"
+                                                    data-paiement-id="{{ $paiement->id }}"
+                                                    data-mode-paiement-id="{{ $paiement->mode_paiement_id }}">
+                                                    {{ $paiement->modePaiement->nom ?? 'Non défini' }}
+                                                </a>
                                             </td>
+
                                             <td>
                                                 <span class="
                                                     badge
@@ -74,7 +88,7 @@
                                                         <button class="btn btn-success" type="submit">Valider</button>
                                                     </form>
                                                 @else
-                                                    <span class="badge badge-success">Effectué</span>
+                                                    <span class="badge badge-success">Paiement Effectué</span>
                                                 @endif
                                             </td>
                                         </tr>

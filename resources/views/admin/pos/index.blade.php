@@ -127,14 +127,7 @@
                                     <h5>Résumé de la Vente</h5>
                                     <form action="{{ route('pos.store') }}" method="POST" id="vente-form">
                                         @csrf
-                                        <div class="form-group" hidden>
-                                            <label for="caisse_id">Choisir Caisse :</label>
-                                            <select name="caisse_id" id="caisse_id" class="form-control" required>
-                                                @foreach($caisses as $caisse)
-                                                    <option value="{{ $caisse->id }}">{{ $caisse->nom }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                        
                                         {{-- fait deux champ avec row input prenom et nom des champ simple --}}
                                         <div class="form-row">
                                             <div class="col">

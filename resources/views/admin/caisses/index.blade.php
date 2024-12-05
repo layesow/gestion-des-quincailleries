@@ -53,11 +53,16 @@
                                                     <button type="button" class="btn btn-primary mr-2 ml-3"><i class="far fa-eye"></i></button>
                                                     <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#modal-default{{ $caisse->id }}"><i class="fas fa-edit"></i></button>
 
-                                                    <form action="{{ route('sup-caisse', $caisse->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette categorie ?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger mr-2"><i class="far fa-trash-alt"></i></button>
-                                                    </form>
+                                                    @if($caisses->count() > 1)
+                                                        <form action="{{ route('sup-caisse', $caisse->id) }}" method="POST" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette caisse ?')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger mr-2"><i class="far fa-trash-alt"></i></button>
+                                                        </form>
+                                                    @else
+                                                        <button type="button" class="btn btn-danger mr-2" disabled><i class="far fa-trash-alt"></i></button>
+                                                    @endif
+
 
                                                 </div>
                                             </td>

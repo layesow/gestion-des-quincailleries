@@ -4,14 +4,15 @@ namespace App\Models;
 
 use App\Models\Role;
 use App\Models\Vente;
+use App\Models\Caisse;
 use App\Models\Client;
 use App\Models\Quincaillerie;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Mail;
 //use Illuminate\Auth\Notifications\VerifyEmail as VerifyEmailNotification;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Notifications\Notifiable;
-use Laratrust\Traits\LaratrustUserTrait;
 //use App\Mail\CustomVerifyEmail;
+use Laratrust\Traits\LaratrustUserTrait;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -36,6 +37,7 @@ class User extends Authenticatable
         'statut',
         'quincaillerie_id',
         'password',
+        'caisse_id',
     ];
 
     /**
@@ -94,5 +96,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Vente::class);
     }
+
+    public function caisse()
+{
+    return $this->belongsTo(Caisse::class);
+}
+
 
 }
