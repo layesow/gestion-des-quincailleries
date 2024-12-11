@@ -31,45 +31,53 @@
               </p>
             </a>
           </li>
-          <li class="nav-item {{ request()->routeIs('pos.index') ? 'menu-open' : '' }}">
-            <a href="{{ route('pos.index') }}" class="nav-link {{ request()->routeIs('pos.index') ? 'active' : '' }}">
-                <i class="nav-icon fas fa-table"></i>
-                <p>
-                    Point de Vente (POS)
-                </p>
-            </a>
-        </li>
+            <li class="nav-item {{ request()->routeIs('admin.quincaillerie') ? 'menu-open' : '' }}">
+                <a href="{{ route('admin.quincaillerie') }}" class="nav-link {{ request()->routeIs('admin.quincaillerie') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-table"></i>
+                    <p>
+                        Quincailleries
+                    </p>
+                </a>
+            </li>
+            <li class="nav-item {{ request()->routeIs('pos.index') ? 'menu-open' : '' }}">
+                <a href="{{ route('pos.index') }}" class="nav-link {{ request()->routeIs('pos.index') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-table"></i>
+                    <p>
+                        Point de Vente (POS)
+                    </p>
+                </a>
+            </li>
 
-          <li class="nav-item">
-            <a href="{{ route('admin.categories') }}" class="nav-link {{ request()->routeIs('admin.categories') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-file"></i>
-              <p>Catégories</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('admin.produit') }}" class="nav-link {{ request()->routeIs('admin.produit') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-file"></i>
-              <p>Produits</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('admin.caisses') }}" class="nav-link {{ request()->routeIs('admin.caisses') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-file"></i>
-              <p>Caisses</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('admin.rapport') }}" class="nav-link {{ request()->routeIs('admin.rapport') ? 'active' : '' }}">
+            <li class="nav-item">
+                <a href="{{ route('admin.categories') }}" class="nav-link {{ request()->routeIs('admin.categories') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-file"></i>
-              <p>Rapports</p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{{ route('admin.stock') }}" class="nav-link {{ request()->routeIs('admin.stock') ? 'active' : '' }}">
+                <p>Catégories</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.produit') }}" class="nav-link {{ request()->routeIs('admin.produit') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-file"></i>
-              <p>Stocks</p>
-            </a>
-          </li>
+                <p>Produits</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.caisses') }}" class="nav-link {{ request()->routeIs('admin.caisses') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-file"></i>
+                <p>Caisses</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.rapport') }}" class="nav-link {{ request()->routeIs('admin.rapport') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-file"></i>
+                <p>Rapports</p>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ route('admin.stock') }}" class="nav-link {{ request()->routeIs('admin.stock') ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-file"></i>
+                <p>Stocks</p>
+                </a>
+            </li>
           <li class="nav-item">
             <a href="{{ route('admin.depense') }}" class="nav-link {{ request()->routeIs('admin.depense') ? 'active' : '' }}">
                 <i class="nav-icon fas fa-file"></i>
@@ -106,6 +114,23 @@
             <ul class="nav nav-treeview">
                 <li class="nav-item">
                     <a href="{{ route('admin.modePaiement') }}" class="nav-link {{ request()->routeIs('admin.modePaiement') ? 'active' : '' }}">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Modes de Paiement</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+          <li class="nav-item has-treeview {{ request()->routeIs('admin.modePaiementAbonne') ? 'menu-open' : '' }}">
+            <a href="#" class="nav-link {{ request()->routeIs('admin.modePaiementAbonne') ? 'active' : '' }}">
+                <i class="nav-icon fas fa-copy"></i>
+                <p>
+                    Paiements Abonnés
+                    <i class="fas fa-angle-left right"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{{ route('admin.modePaiementAbonne') }}" class="nav-link {{ request()->routeIs('admin.modePaiementAbonne') ? 'active' : '' }}">
                         <i class="far fa-circle nav-icon"></i>
                         <p>Modes de Paiement</p>
                     </a>

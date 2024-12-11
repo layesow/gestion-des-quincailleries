@@ -20,8 +20,6 @@ class AdminProfileUpdateRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'telephone' => ['required', 'string', 'max:255'],
             'adresse' => ['required', 'string', 'max:255'],
-            'ville' => ['required', 'string', 'max:255'],
-            'date_naissance' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
         ];
     }
@@ -38,8 +36,6 @@ class AdminProfileUpdateRequest extends FormRequest
             'name.required' => 'Le nom est requis.',
             'telephone.required' => 'Le numéro de téléphone est requis.',
             'adresse.required' => 'L\'adresse est requise.',
-            'ville.required' => 'La ville est requise.',
-            'date_naissance.required' => 'La date de naissance est requise.',
             'email.required' => 'L\'adresse e-mail est requise.',
             'email.unique' => 'Cette adresse e-mail est déjà utilisée.',
             'email.email' => 'Veuillez entrer une adresse e-mail valide.',

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ModePaiementAbonne;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\StockController;
@@ -14,10 +15,9 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\AbonnementController;
 use App\Http\Controllers\Admin\ProfilAdminController;
 use App\Http\Controllers\Admin\ModePaiementController;
+use App\Http\Controllers\Admin\QuincallerieController;
 use App\Http\Controllers\Admin\PlanAbonnementController;
-
-
-
+use App\Http\Controllers\Admin\ModePaiementAbonneController;
 
 // front route
 
@@ -38,17 +38,26 @@ Route::middleware(['auth', 'verified', 'role:admin|quincaillier|gestionnaire', /
     Route::patch('/profil', [ProfilAdminController::class, 'update'])->name('profil-admin.update');
     Route::delete('/profil', [ProfilAdminController::class, 'destroy'])->name('profil-admin.destroy');
 
+    //mode_paiement
+    Route::get('/mode-paiement-abonne', [ModePaiementAbonneController::class, 'index'])->name('admin.modePaiementAbonne');
+    Route::get("/mode-paiement-abonne/ajouter",[ModePaiementAbonneController::class,"create"])->name("ajouter-modePaiementAbonne");
+    Route::post("/mode-paiement-abonne/ajouter",[ModePaiementAbonneController::class,"store"])->name("ajouter-modePaiementAbonne");
+    Route::get('/mode-paiement-abonne/{id}/modifier', [ModePaiementAbonneController::class, 'edit'])->name('modifer-modePaiementAbonne');
+    Route::put('/mode-paiement-abonne/{id}/modifier', [ModePaiementAbonneController::class, 'update'])->name('update-modePaiementAbonne');
+    Route::delete('/mode-paiement-abonne/{id}', [ModePaiementAbonneController::class, 'destroy'])->name('sup-modePaiementAbonne');
+
+
 
     // Sous-groupe pour "admin"
     Route::group(['middleware' => 'role:admin'], function () {
 
-        //agence
-        //Route::get('/agences', [AgenceController::class, 'index'])->name('admin.agences');
-        //Route::get('/agence/ajouter', [AgenceController::class, 'create'])->name('ajouter-agence');
-        //Route::post('/agence/ajouter', [AgenceController::class, 'store'])->name('ajouter-agence');
-        //Route::get('/agence/{id}/modifier', [AgenceController::class, 'edit'])->name('modifer-agence');
-        //Route::put('/agence/{id}/modifier', [AgenceController::class, 'update'])->name('update-agence');
-        //Route::delete('/agence/{id}', [AgenceController::class, 'destroy'])->name('sup-agence');
+        //Quincailleries
+        Route::get('/quincailleries', [QuincallerieController::class, 'index'])->name('admin.quincaillerie');
+        Route::get('/quincaillerie/ajouter', [QuincallerieController::class, 'create'])->name('ajouter-quincaillerie');
+        Route::post('/quincaillerie/ajouter', [QuincallerieController::class, 'store'])->name('ajouter-quincaillerie');
+        Route::get('/quincaillerie/{id}/modifier', [QuincallerieController::class, 'edit'])->name('modifer-quincaillerie');
+        Route::put('/quincaillerie/{id}/modifier', [QuincallerieController::class, 'update'])->name('update-quincaillerie');
+        Route::delete('/quincaillerie/{id}', [QuincallerieController::class, 'destroy'])->name('sup-quincaillerie');
 
 
     });
@@ -117,23 +126,41 @@ Route::middleware(['auth', 'verified', 'role:admin|quincaillier|gestionnaire', /
         Route::put('/plan-abonnement/{id}/modifier', [PlanAbonnementController::class, 'update'])->name('update-plan');
         Route::delete('/plan-abonnement/{id}', [PlanAbonnementController::class, 'destroy'])->name('sup-plan');
 
-        // pour les sabonné a un plan dabonnement
-        Route::get('/abonnements', [AbonnementController::class, 'index'])->name('abonnements.index');
-        Route::get('/packs', [AbonnementController::class, 'pack'])->name('abonnements.pack');
-        Route::get('/abonnements/souscrire/{planId}', [AbonnementController::class, 'souscrire'])->name('souscrire');
-        Route::post('/abonnements/enregistrer-souscription/{planId}', [AbonnementController::class, 'enregistrerSouscription'])->name('enregistrer.souscription');
-        Route::post('/abonnements/mise-a-jour/{abonnementId}', [AbonnementController::class, 'miseAJourAbonnement'])->name('abonnements.mise_a_jour');
 
 
-    // routes/web.php
-    /*
-    Route::get('/paiements', [PaiementController::class, 'index'])->name('paiements.index');
-    Route::get('/paiements/creer/{abonnementId}', [PaiementController::class, 'creerPaiement'])->name('paiements.creer');
-    Route::post('/paiements/enregistrer/{abonnementId}', [PaiementController::class, 'enregistrerPaiement'])->name('paiements.enregistrer');
-    Route::post('/paiements/valider/{paiementId}', [PaiementController::class, 'validerPaiement'])->name('paiements.valider');
-    */
-    // routes/web.php
+        // routes/web.php
+        /*
+        Route::get('/paiements', [PaiementController::class, 'index'])->name('paiements.index');
+        Route::get('/paiements/creer/{abonnementId}', [PaiementController::class, 'creerPaiement'])->name('paiements.creer');
+        Route::post('/paiements/enregistrer/{abonnementId}', [PaiementController::class, 'enregistrerPaiement'])->name('paiements.enregistrer');
+        Route::post('/paiements/valider/{paiementId}', [PaiementController::class, 'validerPaiement'])->name('paiements.valider');
+        */
+        // routes/web.php
 
+
+
+        // Afficher la page POS
+        Route::get('/pos', [VenteController::class, 'index'])->name('pos.index');
+
+        // Enregistrer une vente
+        Route::post('/pos/vente', [VenteController::class, 'store'])->name('pos.store');
+
+        Route::get('/ventes', [VenteController::class, 'showVentes'])->name('ventes.index');
+        Route::get('/ventes/{id}/pdf', [VenteController::class, 'generatePDF'])->name('ventes.pdf');
+        Route::get('/ventes/{id}', [VenteController::class, 'show'])->name('voir-vente');
+        Route::delete('ventes/{id}', [VenteController::class, 'destroy'])->name('ventes.sup');
+
+    });
+
+
+    // pour les sabonné a un plan dabonnement
+    Route::get('/abonnements', [AbonnementController::class, 'index'])->name('abonnements.index');
+    Route::get('/packs', [AbonnementController::class, 'pack'])->name('abonnements.pack');
+    Route::get('/abonnements/souscrire/{planId}', [AbonnementController::class, 'souscrire'])->name('souscrire');
+    Route::post('/abonnements/enregistrer-souscription/{planId}', [AbonnementController::class, 'enregistrerSouscription'])->name('enregistrer.souscription');
+    Route::post('/abonnements/mise-a-jour/{abonnementId}', [AbonnementController::class, 'miseAJourAbonnement'])->name('abonnements.mise_a_jour');
+
+    // route des paiements
     Route::get('/paiements', [PaiementController::class, 'index'])->name('paiements.index');
     Route::get('/paiements/creer/{abonnementId}', [PaiementController::class, 'creerPaiement'])->name('paiements.creer');
     Route::post('/paiements/enregistrer/{abonnementId}', [PaiementController::class, 'enregistrerPaiement'])->name('paiements.enregistrer');
@@ -143,18 +170,6 @@ Route::middleware(['auth', 'verified', 'role:admin|quincaillier|gestionnaire', /
     Route::post('/paiements/{paiement_id}/mettre-a-jour-mode', [PaiementController::class, 'mettreAJourMode'])->name('paiements.mettre-a-jour-mode');
 
 
-    // Afficher la page POS
-    Route::get('/pos', [VenteController::class, 'index'])->name('pos.index');
-
-    // Enregistrer une vente
-    Route::post('/pos/vente', [VenteController::class, 'store'])->name('pos.store');
-
-    Route::get('/ventes', [VenteController::class, 'showVentes'])->name('ventes.index');
-    Route::get('/ventes/{id}/pdf', [VenteController::class, 'generatePDF'])->name('ventes.pdf');
-    Route::get('/ventes/{id}', [VenteController::class, 'show'])->name('voir-vente');
-    Route::delete('ventes/{id}', [VenteController::class, 'destroy'])->name('ventes.sup');
-
-    });
 });
 
 

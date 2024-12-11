@@ -127,7 +127,7 @@
                                     <h5>Résumé de la Vente</h5>
                                     <form action="{{ route('pos.store') }}" method="POST" id="vente-form">
                                         @csrf
-                                        
+
                                         {{-- fait deux champ avec row input prenom et nom des champ simple --}}
                                         <div class="form-row">
                                             <div class="col">
@@ -140,7 +140,7 @@
 
 
 
-                                        <div class="mb-3" style="max-height: 300px; overflow-y: auto;">
+                                        <div class="mb-2" style="max-height: 300px; overflow-y: auto;">
                                         <table class="table table-bordered" id="cart-table">
                                             <thead>
                                                 <tr>
@@ -155,13 +155,24 @@
                                             </tbody>
                                         </table>
                                         </div>
-
-                                        <div class="form-group">
-                                            <hr>
-                                            <label for="total">Total: </label>
-                                            <input type="hidden" name="total" id="total" value="0">
-                                            <span id="total-display">0 CFA</span>
+                                        <hr>
+                                        <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                            <div class="col-md-6">
+                                                <div class="form-group me-3">
+                                                    <label for="total">Total: </label><br>
+                                                    <input type="hidden" name="total" id="total" value="0">
+                                                    <span id="total-display">0 CFA</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="remise">Remise (en CFA) :</label>
+                                                    <input type="number" name="remise" id="remise" class="form-control" value="0" min="0" step="1" placeholder="Entrez la remise">
+                                                </div>
+                                            </div>
                                         </div>
+
+
 
                                         <div class="form-group">
                                             <label>Mode de Paiement :</label><br>
@@ -176,11 +187,6 @@
                                             </div>
                                             <input type="hidden" name="modes_paiement_id" id="selected_mode_paiement" required>
                                         </div>
-                                        {{-- <select name="modes_paiement_id" required>
-                                            @foreach($modesPaiement as $mode)
-                                                <option value="{{ $mode->id }}">{{ $mode->nom }}</option>
-                                            @endforeach
-                                        </select> --}}
                                         <script>
                                             document.querySelectorAll('.mode-paiement').forEach(button => {
                                                 button.addEventListener('click', function() {
@@ -201,7 +207,6 @@
                                                 });
                                             });
                                         </script>
-
 
                                         <button type="submit" class="btn btn-success">Enregistrer la Vente</button>
                                     </form>
@@ -226,7 +231,7 @@
 
 @section('scriptsPOS')
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    /* document.addEventListener('DOMContentLoaded', function () {
         const searchInput = document.getElementById('search');
         const productItems = document.querySelectorAll('.product-item');
 
@@ -242,12 +247,8 @@
                 }
             });
         });
-    });
-    </script>
-
-<script>
-// Gestion du panier avec JavaScript
-document.addEventListener('DOMContentLoaded', function () {
+    }); */
+    document.addEventListener('DOMContentLoaded', function () {
     const cart = [];
     let total = 0;
 
@@ -255,13 +256,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const cartTableBody = document.querySelector('#cart-table tbody');
     const totalInput = document.getElementById('total');
     const totalDisplay = document.getElementById('total-display');
+    const remiseInput = document.getElementById('remise');
 
-   // Ajouter la logique pour gérer les prix promotionnels dans le panier
     addToCartButtons.forEach(button => {
         button.addEventListener('click', function () {
             const id = this.getAttribute('data-id');
             const nom = this.getAttribute('data-nom');
-            const prix = parseFloat(this.getAttribute('data-prix')); // Le prix est soit promo soit standard
+            const prix = parseFloat(this.getAttribute('data-prix'));
 
             const existingProduct = cart.find(item => item.id === id);
             if (existingProduct) {
@@ -274,6 +275,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    remiseInput.addEventListener('input', updateCart);
 
     function updateCart() {
         // Réinitialise le tableau
@@ -282,90 +284,179 @@ document.addEventListener('DOMContentLoaded', function () {
 
         cart.forEach(item => {
             const row = document.createElement('tr');
-
-            /* row.innerHTML = `
-                <td>${item.nom}</td>
-                <td>
-                    <input type="number" min="1" value="${item.quantite}" class="form-control quantite" data-id="${item.id}">
-                </td>
-                <td>${(item.prix * item.quantite).toFixed(2)}</td>
-                <td>
-                    <button class="btn btn-danger remove-item" data-id="${item.id}"><i class="fa fa-trash" aria-hidden="true"></i>
-                    </button>
-                </td>
-            `; */
             row.innerHTML = `
                 <td>${item.nom}</td>
                 <td>
                     <input type="number" min="1" value="${item.quantite}" class="form-control quantite" data-id="${item.id}">
                 </td>
-                <td>${Math.round(item.prix * item.quantite)}</td>
+                <td>${(item.prix * item.quantite).toFixed(0)}</td>
                 <td>
-                    <button class="btn btn-danger remove-item" data-id="${item.id}"><i class="fa fa-trash" aria-hidden="true"></i>
-                    </button>
+                    <button class="btn btn-danger remove-item" data-id="${item.id}"><i class="fas fa-trash"></i></button>
                 </td>
             `;
-
             cartTableBody.appendChild(row);
 
-            //total += item.prix * item.quantite;
-            total += Math.round(item.prix * item.quantite);
+            total += item.prix * item.quantite;
 
-        });
+            // Gérer les changements de quantité
+            row.querySelector('.quantite').addEventListener('input', function () {
+                const newQuantity = parseInt(this.value, 10);
+                const productId = this.getAttribute('data-id');
+                const product = cart.find(p => p.id === productId);
 
-        totalInput.value = total;
-        //totalDisplay.textContent = total.toFixed(2) + ' CFA';
-        totalDisplay.textContent = Math.round(total) + ' CFA';
-
-
-        // Ajouter les écouteurs pour les nouvelles actions
-        document.querySelectorAll('.quantite').forEach(input => {
-            input.addEventListener('change', function () {
-                const id = this.getAttribute('data-id');
-                const newQuantite = parseInt(this.value);
-                const product = cart.find(item => item.id === id);
-                if (product) {
-                    product.quantite = newQuantite;
-                    updateCart();
+                if (product && newQuantity > 0) {
+                    product.quantite = newQuantity;
                 }
+
+                updateCart();
+            });
+
+            // Supprimer un produit
+            row.querySelector('.remove-item').addEventListener('click', function () {
+                const productId = this.getAttribute('data-id');
+                const productIndex = cart.findIndex(p => p.id === productId);
+
+                if (productIndex !== -1) {
+                    cart.splice(productIndex, 1);
+                }
+
+                updateCart();
             });
         });
 
-        document.querySelectorAll('.remove-item').forEach(button => {
+        // Appliquer la remise
+        const remise = parseFloat(remiseInput.value) || 0;
+        const totalAvecRemise = Math.max(total - remise, 0);
+
+        // Met à jour les valeurs dans le DOM
+        totalInput.value = totalAvecRemise.toFixed(0);
+        totalDisplay.textContent = `${totalAvecRemise.toFixed(0)} CFA`;
+    }
+});
+
+</script>
+
+<script>
+    // Gestion du panier avec JavaScript
+    document.addEventListener('DOMContentLoaded', function () {
+        const cart = [];
+        let total = 0;
+
+        const addToCartButtons = document.querySelectorAll('.add-to-cart');
+        const cartTableBody = document.querySelector('#cart-table tbody');
+        const totalInput = document.getElementById('total');
+        const totalDisplay = document.getElementById('total-display');
+
+    // Ajouter la logique pour gérer les prix promotionnels dans le panier
+        addToCartButtons.forEach(button => {
             button.addEventListener('click', function () {
                 const id = this.getAttribute('data-id');
-                const index = cart.findIndex(item => item.id === id);
-                if (index !== -1) {
-                    cart.splice(index, 1);
-                    updateCart();
+                const nom = this.getAttribute('data-nom');
+                const prix = parseFloat(this.getAttribute('data-prix')); // Le prix est soit promo soit standard
+
+                const existingProduct = cart.find(item => item.id === id);
+                if (existingProduct) {
+                    existingProduct.quantite += 1;
+                } else {
+                    cart.push({ id, nom, prix, quantite: 1 });
                 }
+
+                updateCart();
             });
         });
-    }
 
-    // Lorsque le formulaire est soumis, ajoute les produits au formulaire
-    document.getElementById('vente-form').addEventListener('submit', function (e) {
-        // Empêche la soumission si le panier est vide
-        if (cart.length === 0) {
-            e.preventDefault();
-            alert('Le panier est vide!');
-        } else {
-            // Crée des champs cachés pour chaque produit
+
+        function updateCart() {
+            // Réinitialise le tableau
+            cartTableBody.innerHTML = '';
+            total = 0;
+
             cart.forEach(item => {
-                const inputId = document.createElement('input');
-                inputId.type = 'hidden';
-                inputId.name = `produits[${item.id}][id]`;
-                inputId.value = item.id;
-                this.appendChild(inputId);
+                const row = document.createElement('tr');
 
-                const inputQuantite = document.createElement('input');
-                inputQuantite.type = 'hidden';
-                inputQuantite.name = `produits[${item.id}][quantite]`;
-                inputQuantite.value = item.quantite;
-                this.appendChild(inputQuantite);
+                /* row.innerHTML = `
+                    <td>${item.nom}</td>
+                    <td>
+                        <input type="number" min="1" value="${item.quantite}" class="form-control quantite" data-id="${item.id}">
+                    </td>
+                    <td>${(item.prix * item.quantite).toFixed(0)}</td>
+                    <td>
+                        <button class="btn btn-danger remove-item" data-id="${item.id}"><i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </td>
+                `; */
+                row.innerHTML = `
+                    <td>${item.nom}</td>
+                    <td>
+                        <input type="number" min="1" value="${item.quantite}" class="form-control quantite" data-id="${item.id}">
+                    </td>
+                    <td>${Math.round(item.prix * item.quantite)}</td>
+                    <td>
+                        <button class="btn btn-danger remove-item" data-id="${item.id}"><i class="fa fa-trash" aria-hidden="true"></i>
+                        </button>
+                    </td>
+                `;
+
+                cartTableBody.appendChild(row);
+
+                //total += item.prix * item.quantite;
+                total += Math.round(item.prix * item.quantite);
+
+            });
+
+            totalInput.value = total;
+            //totalDisplay.textContent = total.toFixed(0) + ' CFA';
+            totalDisplay.textContent = Math.round(total) + ' CFA';
+
+
+            // Ajouter les écouteurs pour les nouvelles actions
+            document.querySelectorAll('.quantite').forEach(input => {
+                input.addEventListener('change', function () {
+                    const id = this.getAttribute('data-id');
+                    const newQuantite = parseInt(this.value);
+                    const product = cart.find(item => item.id === id);
+                    if (product) {
+                        product.quantite = newQuantite;
+                        updateCart();
+                    }
+                });
+            });
+
+            document.querySelectorAll('.remove-item').forEach(button => {
+                button.addEventListener('click', function () {
+                    const id = this.getAttribute('data-id');
+                    const index = cart.findIndex(item => item.id === id);
+                    if (index !== -1) {
+                        cart.splice(index, 1);
+                        updateCart();
+                    }
+                });
             });
         }
+
+        // Lorsque le formulaire est soumis, ajoute les produits au formulaire
+        document.getElementById('vente-form').addEventListener('submit', function (e) {
+            // Empêche la soumission si le panier est vide
+            if (cart.length === 0) {
+                e.preventDefault();
+                alert('Le panier est vide!');
+            } else {
+                // Crée des champs cachés pour chaque produit
+                cart.forEach(item => {
+                    const inputId = document.createElement('input');
+                    inputId.type = 'hidden';
+                    inputId.name = `produits[${item.id}][id]`;
+                    inputId.value = item.id;
+                    this.appendChild(inputId);
+
+                    const inputQuantite = document.createElement('input');
+                    inputQuantite.type = 'hidden';
+                    inputQuantite.name = `produits[${item.id}][quantite]`;
+                    inputQuantite.value = item.quantite;
+                    this.appendChild(inputQuantite);
+                });
+            }
+        });
     });
-});
 </script>
 @endsection

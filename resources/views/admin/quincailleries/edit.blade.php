@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Mettre à la categorie</h4>
+                <h4 class="modal-title">Ajouter une Catégorie</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -14,11 +14,10 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col-md-12">
-                                <label for="exampleInput">Nom de la categorie</label>
+                                <label for="exampleInput">Nom de la catégorie</label>
                                 <input type="text" name="nom" value="{{ $categorie->nom }}" class="form-control" id="exampleInput"
-                                    placeholder="Nom de la categorie" required>
+                                    placeholder="Nom de la catégorie" required>
                             </div>
-
                         </div>
                     </div>
                 </div>

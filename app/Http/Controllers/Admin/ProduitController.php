@@ -36,7 +36,8 @@ class ProduitController extends Controller
             ->latest()
             ->get();
 
-        $categories = Categorie::all();
+        $categories = Categorie::where('quincaillerie_id', $quincaillerie_id)->get();
+
         $statut = ['public', 'prive'];
         $codeBarre = 'PRD-' . strtoupper(substr(uniqid(), -8));  // Prend seulement les 8 derniers caractères
 

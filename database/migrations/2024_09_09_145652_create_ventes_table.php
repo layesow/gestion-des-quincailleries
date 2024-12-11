@@ -23,6 +23,7 @@ return new class extends Migration
             $table->decimal('total', 10, 2); // Montant total de la vente
             $table->foreignId('modes_paiement_id')->constrained('modes_paiement')->onDelete('cascade'); // Référence au mode de paiement
             $table->enum('type_vente', ['direct', 'commande'])->default('direct'); // Type de vente (POS direct ou via commande)
+            $table->decimal('remise', 10, 2)->default(0); // Remise appliquée sur le total
             $table->timestamps();
         });
     }

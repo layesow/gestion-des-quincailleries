@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Paiement;
 use App\Models\Abonnement;
 use App\Models\ModePaiement;
+use App\Models\ModePaiementAbonne;
 use Illuminate\Http\Request;
 
 class PaiementController extends Controller
@@ -16,9 +17,9 @@ class PaiementController extends Controller
     {
         /* $paiements = Paiement::with(['abonnement', 'modePaiement'])->get();
         return view('admin.paiements.index', compact('paiements')); */
-        $paiements = Paiement::with(['abonnement', 'modePaiement'])->get();
-    $modesPaiement = ModePaiement::all(); // Assure-toi que tu as un modèle ModePaiement pour cela
-    return view('admin.paiements.index', compact('paiements', 'modesPaiement'));
+        $paiements = Paiement::with(['abonnement', 'modePaiementAbonne'])->get();
+        $modesPaiementAbonne = ModePaiementAbonne::all(); // Assure-toi que tu as un modèle ModePaiement pour cela
+        return view('admin.paiements.index', compact('paiements', 'modesPaiementAbonne'));
     }
 
 
@@ -30,7 +31,7 @@ class PaiementController extends Controller
             'abonnement_id' => $abonnement->id,
             'date_paiement' => now(),
             'montant' => $abonnement->planAbonnement->prix,
-            'mode_paiement_id' => $request->input('mode_paiement_id'),
+            'mode_paiement_abonne_id' => $request->input('mode_paiement_abonne_id'),
             'statut' => 'en attente',
         ]);
 
@@ -51,16 +52,29 @@ class PaiementController extends Controller
         return redirect()->route('paiements.index')->with('success', 'Paiement validé et abonnement activé.');
     }
 
-   
-    public function mettreAJourMode(Request $request, $paiement_id)
-    {
-        $paiement = Paiement::findOrFail($paiement_id);
-        $paiement->update([
-            'mode_paiement_id' => $request->input('mode_paiement_id'),
-        ]);
 
-        return redirect()->route('paiements.index')->with('success', 'Mode de paiement mis à jour avec succès.');
-    }
+    public function mettreAJourMode(Request $request, $paiement_id)
+{
+    // Debugger la requête pour voir ce qui est envoyé
+    //dd($request->all());  // Cela vous montrera toutes les données envoyées dans la requête
+
+    // Validation
+    $request->validate([
+        'mode_paiement_abonne_id' => 'required|exists:modes_paiement_abonne,id',
+    ]);
+
+    // Trouver le paiement
+    $paiement = Paiement::findOrFail($paiement_id);
+
+    // Mise à jour du mode de paiement
+    $paiement->update([
+        'mode_paiement_abonne_id' => $request->input('mode_paiement_abonne_id'),
+    ]);
+
+    // Retourner à la liste des paiements avec un message de succès
+    return redirect()->route('paiements.index')->with('success', 'Mode de paiement mis à jour avec succès.');
+}
+
 
 }
 

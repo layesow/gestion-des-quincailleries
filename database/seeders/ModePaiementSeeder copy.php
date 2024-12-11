@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+
 use App\Models\ModePaiement;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -19,8 +20,11 @@ class ModePaiementSeeder extends Seeder
         $quincaillerieId = 1; // Assurez-vous que cette valeur existe dans la table 'quincailleries'
 
         $modesPaiement = [
+            ['nom' => 'Carte de Crédit', 'quincaillerie_id' => $quincaillerieId],
+            ['nom' => 'Virement Bancaire', 'quincaillerie_id' => $quincaillerieId],
+            ['nom' => 'PayPal', 'quincaillerie_id' => $quincaillerieId],
             ['nom' => 'Wave', 'quincaillerie_id' => $quincaillerieId],
-            ['nom' => 'Orange Money', 'quincaillerie_id' => $quincaillerieId],
+            ['nom' => 'Orange  Money', 'quincaillerie_id' => $quincaillerieId],
             ['nom' => 'Espéce', 'quincaillerie_id' => $quincaillerieId],
         ];
 

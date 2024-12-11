@@ -64,8 +64,8 @@
                                             <td>
                                                 <a href="#" data-toggle="modal" data-target="#modalModifierMode{{ $paiement->id }}"
                                                     data-paiement-id="{{ $paiement->id }}"
-                                                    data-mode-paiement-id="{{ $paiement->mode_paiement_id }}">
-                                                    {{ $paiement->modePaiement->nom ?? 'Non défini' }}
+                                                    data-mode-paiement-id="{{ $paiement->mode_paiement_abonne_id }}">
+                                                    {{ $paiement->modePaiementAbonne->nom ?? 'Non défini' }}
                                                 </a>
                                             </td>
 
@@ -107,10 +107,10 @@
                                                         @csrf
                                                         <div class="modal-body">
                                                             <div class="form-group">
-                                                                <label for="mode_paiement_id">Mode de Paiement</label>
-                                                                <select name="mode_paiement_id" id="mode_paiement_id" class="form-control">
-                                                                    @foreach ($modesPaiement as $mode)
-                                                                        <option value="{{ $mode->id }}" {{ $paiement->mode_paiement_id == $mode->id ? 'selected' : '' }}>
+                                                                <label for="mode_paiement_abonne_id">Mode de Paiement</label>
+                                                                <select name="mode_paiement_abonne_id" id="mode_paiement_abonne_id" class="form-control">
+                                                                    @foreach ($modesPaiementAbonne as $mode)
+                                                                        <option value="{{ $mode->id }}" {{ $paiement->mode_paiement_abonne_id == $mode->id ? 'selected' : '' }}>
                                                                             {{ $mode->nom }}
                                                                         </option>
                                                                     @endforeach

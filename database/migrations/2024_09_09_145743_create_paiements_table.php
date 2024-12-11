@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('abonnement_id')->constrained('abonnements')->onDelete('cascade');
             $table->date('date_paiement');
             $table->decimal('montant', 10, 2);
-            $table->foreignId('mode_paiement_id')->constrained('modes_paiement')->onDelete('cascade');
+            $table->foreignId('mode_paiement_abonne_id')->constrained('modes_paiement_abonne')->onDelete('cascade');
             $table->enum('statut', ['en attente', 'effectué', 'échoué'])->default('en attente'); // Statut du paiement
 
             $table->timestamps();

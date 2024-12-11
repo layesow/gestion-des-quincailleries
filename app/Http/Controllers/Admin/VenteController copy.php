@@ -171,6 +171,7 @@ class VenteController extends Controller
             'modes_paiement_id' => $request->modes_paiement_id, // Ajoutez le mode de paiement ici
             'date_vente' => now(),
             'total' => $total, // Ajoutez le total calculé
+            'remise' => $request->remise,
         ]);
 
         // Ajouter les produits à la vente et mettre à jour le stock

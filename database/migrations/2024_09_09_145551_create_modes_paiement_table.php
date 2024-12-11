@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('caisse_id')->nullable()->constrained()->onDelete('set null');
-
+        Schema::create('modes_paiement_abonne', function (Blueprint $table) {
+            $table->id();
+            $table->string('nom');
+            //$table->foreignId('quincaillerie_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -22,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('modes_paiement_abonne');
     }
 };

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use Carbon\Carbon;
 use App\Models\Role;
 use App\Models\User;
-use App\Models\Agence;
+use App\Models\Quincaillerie;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
@@ -24,7 +24,7 @@ class RegisteredUserController extends Controller
     public function create(): View
     {   $roles = Role::all();
         $statuts = ['actif', 'inactif']; // Ajoute cette ligne
-        // pour agence
+        // pour quincaillerie
 
         return view('auth.register', compact('roles', 'statuts'));
     }
@@ -45,22 +45,7 @@ class RegisteredUserController extends Controller
             'prenom' => ['required', 'string', 'max:255'],
             'telephone' => ['required','max:20'],
             'adresse' => ['required', 'string'],
-            'ville' => ['required', 'string', 'max:255'],
-            'date_naissance' => [
-                'required',
-                'date',
-                function ($attribute, $value, $fail) {
-                    // Calculer l'âge de l'utilisateur
-                    $age = Carbon::parse($value)->age;
-
-                    // Vérifier si l'âge est inférieur à 18 ans
-                    if ($age < 18) {
-                        // Si l'utilisateur a moins de 18 ans, renvoyer un message d'erreur
-                        $fail('Vous devez avoir au moins 18 ans pour vous inscrire.');
-                    }
-                },
-            ],
-            'role' => ['required', 'in:client,agence'],
+            //'role' => ['required', 'in:client,quincaillerie'],
         ], [
             // Messages d'erreur personnalisés
             'prenom.required' => 'Le nom est requis.',
@@ -84,31 +69,26 @@ class RegisteredUserController extends Controller
             'telephone.max' => 'Le numéro de téléphone ne doit pas dépasser 20 caractères.',
             'adresse.required' => 'L\'adresse est requise.',
             'adresse.string' => 'L\'adresse doit être une chaîne de caractères.',
-            'ville.required' => 'La ville est requise.',
-            'ville.string' => 'La ville doit être une chaîne de caractères.',
-            'ville.max' => 'La ville ne doit pas dépasser 255 caractères.',
-            'date_naissance.required' => 'La date de naissance est requise.',
-            'date_naissance.date' => 'La date de naissance doit être une date valide.',
             'role.required' => 'Le rôle est requis.',
-            'role.in' => 'Le rôle doit être soit "client" soit "agence".',
+            //'role.in' => 'Le rôle doit être soit "client" soit "quincaillerie".',
         ]);
 
 
-        // Valider les champs spécifiques à l'agence si le rôle est agence
-        if ($request->role === 'agence') {
+        // Valider les champs spécifiques à la quincaillerie si le rôle est quincaillerie
+        if ($request->role === 'quincaillerie') {
             $request->validate([
-                'agence_name' => ['required', 'string', 'max:255'],
-                'agence_email' => ['nullable', 'email', 'unique:agences,email', 'max:255'],
-                'agence_telephone' => ['nullable','max:20'],
-                'agence_adresse' => ['nullable', 'string', 'max:255'],
+                'quincaillerie_name' => ['required', 'string', 'max:255'],
+                'quincaillerie_email' => ['nullable', 'email', 'unique:quincailleries,email', 'max:255'],
+                'quincaillerie_telephone' => ['nullable','max:20'],
+                'quincaillerie_adresse' => ['nullable', 'string', 'max:255'],
             ],[
-                'agence_name.required' => 'Le nom de l\'agence est requis.',
-                /* 'agence_email.nullable' => 'L\'adresse e-mail de l\'agence est requise.',
-                'agence_telephone.required' => 'Le numéro de téléphone de l\'agence est requis.',
-                'agence_telephone.max' => 'Le numéro de téléphone de l\'agence ne doit pas dépasser 20 caractères.',
-                'agence_adresse.required' => 'L\'adresse de l\'agence est requise.',
-                'agence_adresse.string' => 'L\'adresse de l\'agence doit être une chaîne de caractères.',
-                'agence_adresse.max' => 'L\'adresse de l\'agence ne doit pas dépasser 255 caractères.', */
+                'quincaillerie_name.required' => 'Le nom de l\'quincaillerie est requis.',
+                /* 'quincaillerie_email.nullable' => 'L\'adresse e-mail de l\'quincaillerie est requise.',
+                'quincaillerie_telephone.required' => 'Le numéro de téléphone de l\'quincaillerie est requis.',
+                'quincaillerie_telephone.max' => 'Le numéro de téléphone de l\'quincaillerie ne doit pas dépasser 20 caractères.',
+                'quincaillerie_adresse.required' => 'L\'adresse de l\'quincaillerie est requise.',
+                'quincaillerie_adresse.string' => 'L\'adresse de l\'quincaillerie doit être une chaîne de caractères.',
+                'quincaillerie_adresse.max' => 'L\'adresse de l\'quincaillerie ne doit pas dépasser 255 caractères.', */
             ]);
         }
 
@@ -120,12 +100,9 @@ class RegisteredUserController extends Controller
             'prenom' => $request->prenom,
             'telephone' => $request->telephone,
             'adresse' => $request->adresse,
-            'ville' => $request->ville,
-            'pays' => $request->pays,
-            'date_naissance' => Carbon::createFromFormat('d/m/Y', $request->date_naissance)->format('Y-m-d'),
         ]);
         // Ajoute cette condition pour définir le statut en fonction du rôle
-        if ($request->role === 'agence') {
+        if ($request->role === 'quincaillerie') {
             //$user->statut = 'inactif';
             $user->statut = 'actif';
         } else {
@@ -134,35 +111,34 @@ class RegisteredUserController extends Controller
 
         $user->save();
 
-        // Gérer les champs spécifiques à l'agence si le rôle est "agence"
-        if ($request->role === 'agence') {
-            $existingAgence = $user->agence; // Récupérer l'agence existante de l'utilisateur
+        // Gérer les champs spécifiques à l'quincaillerie si le rôle est "quincaillerie"
+        if ($request->role === 'quincaillerie') {
+            $existingQuincaillerie = $user->quincaillerie; // Récupérer l'quincaillerie existante de l'utilisateur
 
-            // Vérifier si l'utilisateur a déjà une agence
-            if ($existingAgence) {
-                // Gérer le cas où l'utilisateur est déjà associé à une agence
+            // Vérifier si l'utilisateur a déjà une quincaillerie
+            if ($existingQuincaillerie) {
+                // Gérer le cas où l'utilisateur est déjà associé à une quincaillerie
                 // Vous pouvez retourner une erreur, afficher un message, etc.
                 // Exemple :
-                return redirect()->back()->with('error', 'L\'utilisateur est déjà associé à une agence.');
+                return redirect()->back()->with('error', 'L\'utilisateur est déjà associé à une quincaillerie.');
             } else {
-                // Si l'utilisateur n'a pas encore d'agence, créer une nouvelle agence
-                $agence = Agence::create([
-                    'name' => $request->agence_name,
-                    'email' => $request->agence_email,
-                    'telephone' => $request->agence_telephone,
-                    'adresse' => $request->agence_adresse,
-                    'ville' => $request->agence_ville,
-                    'code_postal' => $request->agence_code_postal,
-                    'pays' => $request->agence_pays,
-                    'description' => $request->agence_description,
-                    'photo' => $request->agence_photo,
-                    //'statut' => $request->agence_statut,
-                    'site_web' => $request->agence_site_web,
-                    //'horaires_ouverture' => $request->agence_horaires_ouverture,
-                    // Ajoutez d'autres champs spécifiques à l'agence ici
+                // Si l'utilisateur n'a pas encore d'quincaillerie, créer une nouvelle quincaillerie
+                $quincaillerie = Quincaillerie::create([
+                    'name' => $request->quincaillerie_name,
+                    'email' => $request->quincaillerie_email,
+                    'telephone' => $request->quincaillerie_telephone,
+                    'adresse' => $request->quincaillerie_adresse,
+                    'ville' => $request->quincaillerie_ville,
+                    'code_postal' => $request->quincaillerie_code_postal,
+                    'description' => $request->quincaillerie_description,
+                    'photo' => $request->quincaillerie_photo,
+                    //'statut' => $request->quincaillerie_statut,
+                    'site_web' => $request->quincaillerie_site_web,
+                    //'horaires_ouverture' => $request->quincaillerie_horaires_ouverture,
+                    // Ajoutez d'autres champs spécifiques à l'quincaillerie ici
                 ]);
-                // Associer l'agence créée à l'utilisateur
-                $user->agence()->associate($agence);
+                // Associer l'quincaillerie créée à l'utilisateur
+                $user->quincaillerie()->associate($quincaillerie);
                 $user->save();
             }
         }
@@ -187,7 +163,7 @@ class RegisteredUserController extends Controller
         }
 
         // Rediriger vers la page appropriée en fonction du rôle
-        $redirectRoute = $user->hasRole('admin') || $user->hasRole('agence') ? 'admin.index' : 'accueil';
+        $redirectRoute = $user->hasRole('admin') || $user->hasRole('quincaillerie') ? 'admin.index' : 'accueil';
 
         return redirect()->route($redirectRoute);
     }

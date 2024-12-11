@@ -42,14 +42,14 @@
                       <b>Votre statut</b> : <a class="float-right">{{ Auth::user()->statut }}</a>
                     </li>
                     @php
-                        use App\Models\Agence;
-                        $agence_id = Auth::user()->agence_id;
-                        $agence = Agence::find($agence_id);
+                        use App\Models\Quincaillerie;
+                        $quincaillerie_id = Auth::user()->quincaillerie_id;
+                        $quincaillerie = Quincaillerie::find($quincaillerie_id);
                     @endphp
 
-                    @if($agence)
+                    @if($quincaillerie)
                         <li class="list-group-item">
-                            <b>Votre Agence</b>: <a class="float-right">{{ $agence->name }}</a>
+                            <b>Votre quincaillerie</b>: <a class="float-right">{{ $quincaillerie->name }}</a>
                         </li>
                     @endif
 

@@ -5,9 +5,9 @@ namespace Database\Seeders;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Quincaillerie;
+use App\Models\Caisse;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class UsersTableSeeder extends Seeder
 {
@@ -21,15 +21,18 @@ class UsersTableSeeder extends Seeder
         $roleGestionnaire = Role::firstOrCreate(['name' => 'gestionnaire']);
         $roleQuincaillier = Role::firstOrCreate(['name' => 'quincaillier']);
 
-        // Créer la quincaillerie s'il n'existe pas déjà
+        // Créer la quincaillerie si elle n'existe pas
         $quincaillerie = Quincaillerie::firstOrCreate([
-            'name' => 'Quincaillerie Exemple',
-            'photo' => null, // Vous pouvez définir une URL par défaut ou une valeur null si aucune photo n'est disponible
+            'name' => 'Quincaillerie',
+            'photo' => null, // Photo par défaut ou null
             'statut' => 'actif',
         ]);
 
         // Récupérer l'ID de la quincaillerie
         $quincaillerieId = $quincaillerie->id;
+
+        // Récupérer l'ID de la caisse associée à la quincaillerie (ou null si inexistante)
+        $caisse = Caisse::where('quincaillerie_id', $quincaillerieId)->first();
 
         // Créer les utilisateurs s'ils n'existent pas déjà
         $userAdmin = User::firstOrCreate(
@@ -40,7 +43,8 @@ class UsersTableSeeder extends Seeder
                 'telephone' => '987654321',
                 'adresse' => '456 Rue de l\'Exemple',
                 'statut' => 'actif',
-                'quincaillerie_id' => null, // Peut être null pour l'admin
+                'quincaillerie_id' => null, // L'administrateur n'est pas forcément lié à une quincaillerie
+                'caisse_id' => null, // Pas de caisse pour l'admin
                 'password' => Hash::make('password'),
             ]
         );
@@ -53,7 +57,8 @@ class UsersTableSeeder extends Seeder
                 'telephone' => '987651321',
                 'adresse' => '452 Rue de l\'Exemple',
                 'statut' => 'actif',
-                'quincaillerie_id' => $quincaillerieId, // Associer au quincaillerie
+                'quincaillerie_id' => $quincaillerieId, // Associer à la quincaillerie
+                'caisse_id' => $caisse?->id, // Utilisation de l'opérateur null-safe
                 'password' => Hash::make('password'),
             ]
         );
@@ -66,7 +71,8 @@ class UsersTableSeeder extends Seeder
                 'telephone' => '987654321',
                 'adresse' => '456 Rue de l\'Exemple',
                 'statut' => 'actif',
-                'quincaillerie_id' => $quincaillerieId, // Associer au quincaillerie
+                'quincaillerie_id' => $quincaillerieId, // Associer à la quincaillerie
+                'caisse_id' => $caisse?->id, // Utilisation de l'opérateur null-safe
                 'password' => Hash::make('password'),
             ]
         );

@@ -63,15 +63,21 @@ class ModePaiementController extends Controller
      */
     public function edit(string $id)
     {
-        // Vérifier l'appartenance du mode de paiement à la quincaillerie de l'utilisateur
+        // Récupérer le mode de paiement en utilisant l'ID et vérifier l'appartenance à la quincaillerie de l'utilisateur
+        $modePaiement = ModePaiement::where('id', $id)
+            ->where('quincaillerie_id', Auth::user()->quincaillerie_id)
+            ->firstOrFail(); // Utiliser firstOrFail pour récupérer le mode de paiement ou lancer une exception si non trouvé
+
+        // Vérifier si le mode de paiement appartient bien à la quincaillerie de l'utilisateur
         if ($modePaiement->quincaillerie_id != Auth::user()->quincaillerie_id) {
             return redirect()->route('admin.modePaiement')
-                             ->with('error', 'Accès non autorisé.');
+                            ->with('error', 'Accès non autorisé.');
         }
 
         // Afficher le formulaire d'édition
         return view('admin.mode_paiement.edit', compact('modePaiement'));
     }
+
 
     /**
      * Update the specified resource in storage.

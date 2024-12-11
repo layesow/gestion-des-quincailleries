@@ -25,6 +25,7 @@ class Vente extends Model
         'total',
         'modes_paiement_id',
         'type_vente',
+        'remise'
     ];
 
     public function quincaillerie()

@@ -33,16 +33,7 @@
                         <input type="text" name="adresse" id="adresse" class="form-control" placeholder="Entrez votre nom" value="{{ old('adresse', $user->adresse) }}" required  autocomplete="adresse" />
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-lg-6 mb-2 ">
-                        <h5>Ville</h5>
-                        <input type="ville" name="ville" id="ville" class="form-control" placeholder="Entrez votre ville" value="{{ old('ville', $user->ville) }}" required  autocomplete="ville" />
-                    </div>
-                    <div class="col-lg-6 mb-2 ">
-                        <h5>Date de naissance</h5>
-                        <input type="date" name="date_naissance" id="date_naissance" class="form-control" placeholder="Entrez votre date_naissance" value="{{ old('adresse', $user->date_naissance) }}" required  autocomplete="date_naissance" />
-                    </div>
-                </div>
+                
             </div>
         </div>
 

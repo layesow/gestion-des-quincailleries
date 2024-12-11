@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Abonnement;
 use App\Models\ModePaiement;
+use App\Models\ModePaiementAbonne;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -15,7 +16,7 @@ class Paiement extends Model
         'abonnement_id',
         'date_paiement',
         'montant',
-        'mode_paiement_id',
+        'mode_paiement_abonne_id',
         'statut',
     ];
 
@@ -30,8 +31,9 @@ class Paiement extends Model
     /**
      * Get the mode de paiement associated with the paiement.
      */
-    public function modePaiement()
+    public function modePaiementAbonne()
     {
-        return $this->belongsTo(ModePaiement::class, 'mode_paiement_id');
+        return $this->belongsTo(ModePaiementAbonne::class, 'mode_paiement_abonne_id');
+        
     }
 }
